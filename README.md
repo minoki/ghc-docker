@@ -12,8 +12,7 @@ $ cd ghc-docker
 ### Build
 
 ```
-$ cd js
-$ docker build -t ghc-9.6.1-js .
+$ docker build -t ghc-9.6.1-js js
 ```
 
 ### Run
@@ -35,8 +34,7 @@ $ docker run --rm -v "$(pwd)":/work -w /work ghc-9.6.1-js cabal build
 ### Build
 
 ```
-$ cd wasm
-$ docker build -t ghc-9.6.1-wasm32-wasi .
+$ docker build -t ghc-9.6.1-wasm32-wasi wasm32-wasi
 ```
 
 Note: In addition to GHC, LLVM is built during `docker build`.
