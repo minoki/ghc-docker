@@ -15,7 +15,7 @@ ENV BOOTSTRAP_HASKELL_GHC_VERSION=9.2.7
 ENV BOOTSTRAP_HASKELL_CABAL_VERSION=3.10.1.0
 ENV BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
-# cabal 3.10 uses $HOME/.local and $HOME/.config instead of $HOME/.cabal
+# cabal 3.10 uses $HOME/.local and $HOME/.config and $HOME/.cache instead of $HOME/.cabal
 ENV PATH=/root/.local/bin:/root/.ghcup/bin:$PATH
 RUN cabal update && cabal install alex happy
 
@@ -47,6 +47,11 @@ ARG GHC_VERSION=9.6.1
 WORKDIR /work
 RUN curl -LO https://downloads.haskell.org/~ghc/$GHC_VERSION/ghc-$GHC_VERSION-src.tar.xz && tar -xJf ghc-$GHC_VERSION-src.tar.xz
 WORKDIR /work/ghc-$GHC_VERSION
+
+# Workaround https://gitlab.haskell.org/ghc/ghc/-/issues/22981
+ADD hsc2hs.patch .
+RUN git apply --directory=utils/hsc2hs hsc2hs.patch
+
 RUN ./configure --target=wasm32-wasi --with-intree-gmp --with-system-libffi \
  AR=${WASI_SDK_PATH}/bin/llvm-ar \
  CC=${WASI_SDK_PATH}/bin/clang \
@@ -66,5 +71,33 @@ RUN ./configure --target=wasm32-wasi --with-intree-gmp --with-system-libffi \
  CONF_CXX_OPTS_STAGE2="-Wno-error=int-conversion -Wno-error=strict-prototypes -Wno-error=implicit-function-declaration -fno-exceptions -Oz -mnontrapping-fptoint -msign-ext -mbulk-memory -mmutable-globals -mreference-types" \
  CONF_GCC_LINKER_OPTS_STAGE2="-Wl,--compress-relocations,--error-limit=0,--growable-table,--stack-first,--strip-debug -Wno-unused-command-line-argument"
 RUN hadrian/build --flavour=quick --docs=none -j binary-dist-dir
+# 'hadrian/build install' cannot be used because of https://gitlab.haskell.org/ghc/ghc/-/issues/21970
+WORKDIR /work/ghc-$GHC_VERSION/_build/bindist/ghc-$GHC_VERSION-wasm32-wasi
+RUN ./configure --target=wasm32-wasi --host=$(uname -m)-linux-gnu --prefix=/opt/ghc \
+ AR=${WASI_SDK_PATH}/bin/llvm-ar \
+ CC=${WASI_SDK_PATH}/bin/clang \
+ CFLAGS=--sysroot=${WASI_SDK_PATH}/share/wasi-sysroot \
+ CC_FOR_BUILD=cc \
+ CXX=${WASI_SDK_PATH}/bin/clang++ \
+ CXXFLAGS=--sysroot=${WASI_SDK_PATH}/share/wasi-sysroot \
+ LD=${WASI_SDK_PATH}/bin/wasm-ld \
+ NM=${WASI_SDK_PATH}/bin/llvm-nm \
+ OBJCOPY=${WASI_SDK_PATH}/bin/llvm-objcopy \
+ OBJDUMP=${WASI_SDK_PATH}/bin/llvm-objdump \
+ RANLIB=${WASI_SDK_PATH}/bin/llvm-ranlib \
+ SIZE=${WASI_SDK_PATH}/bin/llvm-size \
+ STRINGS=${WASI_SDK_PATH}/bin/llvm-strings \
+ STRIP=${WASI_SDK_PATH}/bin/llvm-strip && \
+ make install
 
-# Work in progress...
+FROM ubuntu:22.04
+
+COPY --from=0 /opt /opt
+COPY --from=0 /root/.ghcup/bin/cabal /root/.ghcup/bin/cabal
+# cabal 3.10 uses $HOME/.local and $HOME/.config and $HOME/.cache instead of $HOME/.cabal
+COPY --from=0 /root/.local/bin/* /root/.local/bin/
+COPY --from=0 /root/.config/cabal /root/.config/cabal
+COPY --from=0 /root/.cache/cabal /root/.cache/cabal
+ENV PATH="/opt/ghc/bin:/root/.local/bin:/root/.ghcup/bin:$PATH"
+RUN sed -i 's|-- with-compiler:|with-compiler: /opt/ghc/bin/wasm32-wasi-ghc|g' /root/.config/cabal/config && sed -i 's|-- with-hc-pkg:|with-hc-pkg: /opt/ghc/bin/wasm32-wasi-ghc-pkg|g' /root/.config/cabal/config
+CMD ["/opt/ghc/bin/wasm32-wasi-ghc"]
