@@ -15,7 +15,7 @@ ENV BOOTSTRAP_HASKELL_GHC_VERSION=9.2.7
 ENV BOOTSTRAP_HASKELL_CABAL_VERSION=3.10.1.0
 ENV BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
-# cabal 3.10 uses $HOME/.local and $HOME/.config instead of $HOME/.cabal
+# cabal 3.10 uses $HOME/.local and $HOME/.config and $HOME/.cache instead of $HOME/.cabal
 ENV PATH=/root/.local/bin:/root/.ghcup/bin:$PATH
 RUN cabal update && cabal install alex happy
 
@@ -45,9 +45,10 @@ RUN apt-get update && apt-get install -y python3
 COPY --from=0 /opt/emsdk /opt/emsdk
 COPY --from=0 /opt/ghc /opt/ghc
 COPY --from=0 /root/.ghcup/bin/cabal /root/.ghcup/bin/cabal
-# cabal 3.10 uses $HOME/.local and $HOME/.config instead of $HOME/.cabal
+# cabal 3.10 uses $HOME/.local and $HOME/.config and $HOME/.cache instead of $HOME/.cabal
 COPY --from=0 /root/.local/bin/* /root/.local/bin/
 COPY --from=0 /root/.config/cabal /root/.config/cabal
+COPY --from=0 /root/.cache/cabal /root/.cache/cabal
 ENV PATH="/opt/ghc/bin:/root/.local/bin:/root/.ghcup/bin:$PATH"
 RUN sed -i 's|-- with-compiler:|with-compiler: /opt/ghc/bin/javascript-unknown-ghcjs-ghc|g' /root/.config/cabal/config && sed -i 's|-- with-hc-pkg:|with-hc-pkg: /opt/ghc/bin/javascript-unknown-ghcjs-ghc-pkg|g' /root/.config/cabal/config
 CMD ["/opt/ghc/bin/javascript-unknown-ghcjs-ghc"]
