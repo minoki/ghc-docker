@@ -87,7 +87,10 @@ RUN ./configure --target=wasm32-wasi --host=$(uname -m)-linux-gnu --prefix=/opt/
  RANLIB=${WASI_SDK_PATH}/bin/llvm-ranlib \
  SIZE=${WASI_SDK_PATH}/bin/llvm-size \
  STRINGS=${WASI_SDK_PATH}/bin/llvm-strings \
- STRIP=${WASI_SDK_PATH}/bin/llvm-strip && \
+ STRIP=${WASI_SDK_PATH}/bin/llvm-strip \
+ CONF_CC_OPTS_STAGE2="-Wno-error=int-conversion -Wno-error=strict-prototypes -Wno-error=implicit-function-declaration -Oz -mnontrapping-fptoint -msign-ext -mbulk-memory -mmutable-globals -mreference-types" \
+ CONF_CXX_OPTS_STAGE2="-Wno-error=int-conversion -Wno-error=strict-prototypes -Wno-error=implicit-function-declaration -fno-exceptions -Oz -mnontrapping-fptoint -msign-ext -mbulk-memory -mmutable-globals -mreference-types" \
+ CONF_GCC_LINKER_OPTS_STAGE2="-Wl,--compress-relocations,--error-limit=0,--growable-table,--stack-first,--strip-debug -Wno-unused-command-line-argument" && \
  make install
 
 FROM ubuntu:22.04
