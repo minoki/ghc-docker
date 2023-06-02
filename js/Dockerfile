@@ -11,7 +11,7 @@ ENV LANG=C.UTF-8
 RUN apt-get update && apt-get install -y build-essential curl git libgmp-dev libnuma1 autoconf python3
 
 ENV BOOTSTRAP_HASKELL_NONINTERACTIVE=1
-ENV BOOTSTRAP_HASKELL_GHC_VERSION=9.2.7
+ENV BOOTSTRAP_HASKELL_GHC_VERSION=9.2.8
 ENV BOOTSTRAP_HASKELL_CABAL_VERSION=3.10.1.0
 ENV BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -24,7 +24,7 @@ RUN git clone --depth 1 https://github.com/emscripten-core/emsdk.git
 WORKDIR /opt/emsdk
 RUN ./emsdk install latest && ./emsdk activate latest
 
-ARG GHC_VERSION=9.6.1
+ARG GHC_VERSION=9.6.2
 
 WORKDIR /work
 RUN curl -LO https://downloads.haskell.org/~ghc/$GHC_VERSION/ghc-$GHC_VERSION-src.tar.xz && tar -xJf ghc-$GHC_VERSION-src.tar.xz
