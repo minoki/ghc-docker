@@ -23,10 +23,9 @@ WORKDIR /work
 RUN git clone --recursive --depth 1 --shallow-submodules https://gitlab.haskell.org/ghc/wasi-sdk.git
 WORKDIR /work/wasi-sdk
 RUN make package
-ARG WASI_VERSION=16
 WORKDIR /opt
-RUN tar xf /work/wasi-sdk/dist/wasi-sdk-${WASI_VERSION}-linux.tar.gz
-ENV WASI_SDK_PATH=/opt/wasi-sdk-${WASI_VERSION}
+RUN tar xf /work/wasi-sdk/dist/wasi-sdk-*-linux.tar.gz && ln -s wasi-sdk-* wasi-sdk
+ENV WASI_SDK_PATH=/opt/wasi-sdk
 
 WORKDIR /work
 RUN git clone https://gitlab.haskell.org/ghc/libffi-wasm.git

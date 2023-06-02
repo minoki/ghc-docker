@@ -20,7 +20,7 @@ ENV PATH=/root/.local/bin:/root/.ghcup/bin:$PATH
 RUN cabal update && cabal install alex happy
 
 WORKDIR /opt
-RUN git clone https://github.com/emscripten-core/emsdk.git
+RUN git clone --depth 1 https://github.com/emscripten-core/emsdk.git
 WORKDIR /opt/emsdk
 RUN ./emsdk install latest && ./emsdk activate latest
 
@@ -35,8 +35,8 @@ RUN source /opt/emsdk/emsdk_env.sh && emconfigure ./configure --target=javascrip
 RUN hadrian/build --flavour=quick --bignum=native --docs=none -j binary-dist-dir
 # 'hadrian/build install' cannot be used because of https://gitlab.haskell.org/ghc/ghc/-/issues/21970
 WORKDIR /work/ghc-$GHC_VERSION/_build/bindist/ghc-$GHC_VERSION-javascript-unknown-ghcjs
-RUN source /opt/emsdk/emsdk_env.sh && emconfigure ./configure --target=javascript-unknown-ghcjs --host=$(uname -m)-linux-gnu --prefix=/opt/ghc
-RUN make install
+RUN source /opt/emsdk/emsdk_env.sh && emconfigure ./configure --target=javascript-unknown-ghcjs --host=$(uname -m)-linux-gnu --prefix=/opt/ghc && \
+ make install
 
 FROM ubuntu:22.04
 
