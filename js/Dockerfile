@@ -50,5 +50,5 @@ COPY --from=0 /root/.local/bin/* /root/.local/bin/
 COPY --from=0 /root/.config/cabal /root/.config/cabal
 COPY --from=0 /root/.cache/cabal /root/.cache/cabal
 ENV PATH="/opt/ghc/bin:/root/.local/bin:/root/.ghcup/bin:$PATH"
-RUN sed -i -e 's|-- with-compiler:|with-compiler: /opt/ghc/bin/javascript-unknown-ghcjs-ghc|g' -e 's|-- with-hc-pkg:|with-hc-pkg: /opt/ghc/bin/javascript-unknown-ghcjs-ghc-pkg|g' /root/.config/cabal/config
+RUN sed -i -e 's|-- with-compiler:|with-compiler: /opt/ghc/bin/javascript-unknown-ghcjs-ghc|g' -e 's|-- with-hc-pkg:|with-hc-pkg: /opt/ghc/bin/javascript-unknown-ghcjs-ghc-pkg|g' -e 's|-- hsc2hs-location:|hsc2hs-location: /opt/ghc/bin/javascript-unknown-ghcjs-hsc2hs|g' /root/.config/cabal/config
 CMD ["/opt/ghc/bin/javascript-unknown-ghcjs-ghc"]
