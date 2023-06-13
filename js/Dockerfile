@@ -40,7 +40,7 @@ RUN source /opt/emsdk/emsdk_env.sh && emconfigure ./configure --target=javascrip
 
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y python3
+RUN apt-get update && apt-get install -y python3 git
 
 COPY --from=0 /opt/emsdk /opt/emsdk
 COPY --from=0 /opt/ghc /opt/ghc

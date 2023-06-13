@@ -94,6 +94,8 @@ RUN ./configure --target=wasm32-wasi --host=$(uname -m)-linux-gnu --prefix=/opt/
 
 FROM ubuntu:22.04
 
+RUN apt-get update && apt-get install -y git
+
 COPY --from=0 /opt /opt
 COPY --from=0 /root/.ghcup/bin/cabal /root/.ghcup/bin/cabal
 # cabal 3.10 uses $HOME/.local and $HOME/.config and $HOME/.cache instead of $HOME/.cabal
