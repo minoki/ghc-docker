@@ -52,3 +52,25 @@ compiled using version 3.10.1.0 of the Cabal library
 $ docker run --rm -v "$(pwd)":/work -w /work ghc-9.6.2-wasm32-wasi wasm32-wasi-ghc hello.hs
 $ docker run --rm -v "$(pwd)":/work -w /work ghc-9.6.2-wasm32-wasi cabal build
 ```
+
+## RISC-V (`riscv64-linux-gnu`)
+
+### Build
+
+```
+$ docker build -t ghc-9.6.2-riscv64-linux-gnu riscv64-linux-gnu
+```
+
+### Run
+
+GHC (`riscv64-linux-gnu-ghc`) and cabal-install (`cabal`) are available.
+
+```
+$ docker run --rm ghc-9.6.2-riscv64-linux-gnu riscv64-linux-gnu-ghc --version
+The Glorious Glasgow Haskell Compilation System, version 9.6.2
+$ docker run --rm ghc-9.6.2-riscv64-linux-gnu cabal --version
+cabal-install version 3.10.1.0
+compiled using version 3.10.1.0 of the Cabal library 
+$ docker run --rm -v "$(pwd)":/work -w /work ghc-9.6.2-riscv64-linux-gnu riscv64-linux-gnu-ghc hello.hs
+$ docker run --rm -v "$(pwd)":/work -w /work ghc-9.6.2-riscv64-linux-gnu cabal build
+```
