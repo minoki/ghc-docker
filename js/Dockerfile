@@ -24,7 +24,7 @@ RUN git clone --depth 1 https://github.com/emscripten-core/emsdk.git
 WORKDIR /opt/emsdk
 RUN ./emsdk install latest && ./emsdk activate latest
 
-ARG GHC_VERSION=9.8.0.20230727
+ARG GHC_VERSION=9.8.0.20230822
 
 WORKDIR /work
 RUN curl -LO https://downloads.haskell.org/~ghc/$GHC_VERSION/ghc-$GHC_VERSION-src.tar.xz && tar -xJf ghc-$GHC_VERSION-src.tar.xz
