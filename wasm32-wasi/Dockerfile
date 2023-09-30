@@ -41,7 +41,7 @@ RUN cabal v2-run libffi-wasm && \
 RUN cp out/libffi-wasm/include/*.h ${WASI_SDK_PATH}/share/wasi-sysroot/include && \
  cp out/libffi-wasm/lib/*.a ${WASI_SDK_PATH}/share/wasi-sysroot/lib/wasm32-wasi
 
-ARG GHC_VERSION=9.8.0.20230822
+ARG GHC_VERSION=9.8.0.20230929
 
 WORKDIR /work
 RUN curl -LO https://downloads.haskell.org/~ghc/$GHC_VERSION/ghc-$GHC_VERSION-src.tar.xz && tar -xJf ghc-$GHC_VERSION-src.tar.xz
