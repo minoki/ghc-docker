@@ -20,8 +20,10 @@ ENV PATH=/root/.local/bin:/root/.ghcup/bin:$PATH
 RUN cabal update && cabal install alex happy
 
 WORKDIR /work
-RUN git clone --recursive --depth 1 --shallow-submodules https://gitlab.haskell.org/ghc/wasi-sdk.git
+# RUN git clone --recursive --depth 1 --shallow-submodules https://gitlab.haskell.org/ghc/wasi-sdk.git
+RUN git clone --depth 1 https://gitlab.haskell.org/ghc/wasi-sdk.git
 WORKDIR /work/wasi-sdk
+RUN git submodule update --init src/config && git submodule update --init --depth 1
 RUN make package
 WORKDIR /opt
 RUN tar xf /work/wasi-sdk/dist/wasi-sdk-*-linux.tar.gz && ln -s wasi-sdk-* wasi-sdk
