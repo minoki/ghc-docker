@@ -15,7 +15,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 ENV PATH=/root/.local/bin:/root/.ghcup/bin:$PATH
 RUN cabal update && cabal install alex happy
 
-ARG GHC_VERSION=9.6.2
+ARG GHC_VERSION=9.6.3
 
 WORKDIR /work
 RUN curl -LO https://downloads.haskell.org/~ghc/$GHC_VERSION/ghc-$GHC_VERSION-src.tar.xz && tar -xJf ghc-$GHC_VERSION-src.tar.xz
