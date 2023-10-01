@@ -32,7 +32,7 @@ ENV WASI_SDK_PATH=/opt/wasi-sdk
 WORKDIR /work
 RUN git clone https://gitlab.haskell.org/ghc/libffi-wasm.git
 WORKDIR /work/libffi-wasm
-RUN cabal v2-run libffi-wasm && \
+RUN cabal v2-run --allow-newer=async:base --allow-newer=hashable:base libffi-wasm && \
  ${WASI_SDK_PATH}/bin/clang -Wall -Wextra -O3 -DNDEBUG -Icbits -c cbits/ffi.c -o cbits/ffi.o && \
  ${WASI_SDK_PATH}/bin/clang -Wall -Wextra -O3 -DNDEBUG -Icbits -c cbits/ffi_call.c -o cbits/ffi_call.o && \
  ${WASI_SDK_PATH}/bin/clang -Wall -Wextra -O3 -DNDEBUG -Icbits -c cbits/ffi_closure.c -o cbits/ffi_closure.o && \
