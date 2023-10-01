@@ -48,11 +48,6 @@ ARG GHC_VERSION=9.8.0.20230929
 WORKDIR /work
 RUN curl -LO https://downloads.haskell.org/~ghc/$GHC_VERSION/ghc-$GHC_VERSION-src.tar.xz && tar -xJf ghc-$GHC_VERSION-src.tar.xz
 WORKDIR /work/ghc-$GHC_VERSION
-
-# Workaround https://gitlab.haskell.org/ghc/ghc/-/issues/22981
-ADD hsc2hs.patch .
-RUN git apply --directory=utils/hsc2hs hsc2hs.patch
-
 RUN ./configure --target=wasm32-wasi --with-intree-gmp --with-system-libffi \
  AR=${WASI_SDK_PATH}/bin/llvm-ar \
  CC=${WASI_SDK_PATH}/bin/clang \
