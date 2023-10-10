@@ -11,7 +11,7 @@ ENV LANG=C.UTF-8
 RUN apt-get update && apt-get install -y build-essential curl git libgmp-dev libnuma1 autoconf cmake ninja-build clang ccache lld clang-format
 
 ENV BOOTSTRAP_HASKELL_NONINTERACTIVE=1
-ENV BOOTSTRAP_HASKELL_GHC_VERSION=9.6.2
+ENV BOOTSTRAP_HASKELL_GHC_VERSION=9.6.3
 ENV BOOTSTRAP_HASKELL_CABAL_VERSION=3.10.1.0
 ENV BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -43,7 +43,7 @@ RUN cabal v2-run --allow-newer=async:base --allow-newer=hashable:base libffi-was
 RUN cp out/libffi-wasm/include/*.h ${WASI_SDK_PATH}/share/wasi-sysroot/include && \
  cp out/libffi-wasm/lib/*.a ${WASI_SDK_PATH}/share/wasi-sysroot/lib/wasm32-wasi
 
-ARG GHC_VERSION=9.8.0.20230929
+ARG GHC_VERSION=9.8.1
 
 WORKDIR /work
 RUN curl -LO https://downloads.haskell.org/~ghc/$GHC_VERSION/ghc-$GHC_VERSION-src.tar.xz && tar -xJf ghc-$GHC_VERSION-src.tar.xz
